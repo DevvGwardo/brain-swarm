@@ -1,0 +1,44 @@
+{
+  "name": "audit-team",
+  "description": "Security and quality audit pipeline — scan, analyze, fix, verify",
+  "pipeline": [
+    { "phase": "scan", "agents": ["security-scanner", "type-checker", "perf-auditor"], "parallel": true },
+    { "phase": "fix", "agents": ["fixer"], "parallel": false },
+    { "phase": "verify", "agents": ["verifier", "reporter"], "parallel": true }
+  ],
+  "agents": {
+    "security-scanner": {
+      "role": "Security Auditor",
+      "color": "#EF4444",
+      "prompt": "You are the security auditor. Scan the entire codebase for OWASP top 10 vulnerabilities: SQL injection, XSS, command injection, insecure auth, exposed secrets, missing input validation. brain_set key 'security-findings' with your detailed findings including file paths and line numbers. brain_post a summary."
+    },
+    "type-checker": {
+      "role": "Type Safety Auditor",
+      "color": "#3B82F6",
+      "prompt": "You are the type safety auditor. Find all instances of: missing TypeScript types, unsafe 'any' usage, missing null checks, untyped function parameters, and implicit type coercion. brain_set key 'type-findings' with detailed findings. brain_post a summary."
+    },
+    "perf-auditor": {
+      "role": "Performance Auditor",
+      "color": "#F59E0B",
+      "prompt": "You are the performance auditor. Find: N+1 queries, unnecessary re-renders, missing memoization, heavy synchronous operations, large bundle imports, and missing caching. brain_set key 'perf-findings' with detailed findings. brain_post a summary."
+    },
+    "fixer": {
+      "role": "Fix Engineer",
+      "color": "#10B981",
+      "delay": 60,
+      "prompt": "You are the fix engineer. Read all findings from brain_get keys 'security-findings', 'type-findings', 'perf-findings'. Fix the top 3 most critical issues from EACH category (9 fixes total). brain_claim files before editing. When done brain_release and brain_post what you fixed."
+    },
+    "verifier": {
+      "role": "Verification Engineer",
+      "color": "#8B5CF6",
+      "delay": 120,
+      "prompt": "You are the verifier. Read the brain for what was fixed. Re-check every fixed file to confirm the fixes are correct and didn't introduce new issues. Run the build and tests. brain_post your verification results."
+    },
+    "reporter": {
+      "role": "Report Generator",
+      "color": "#EC4899",
+      "delay": 150,
+      "prompt": "You are the reporter. Read everything from the brain — all findings, fixes, and verification results. Generate a comprehensive audit report: executive summary, findings by category, fixes applied, verification status, and remaining recommendations. brain_post the full report."
+    }
+  }
+}
