@@ -20,7 +20,11 @@ const path = '$SETTINGS_FILE';
 const swarmPath = '$SWARM_DIR/dist/index.js';
 const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
 if (!settings.mcpServers) settings.mcpServers = {};
-settings.mcpServers['brain-swarm'] = { command: 'node', args: [swarmPath] };
+settings.mcpServers['brain-swarm'] = {
+  command: 'node',
+  args: [swarmPath],
+  env: { PATH: [process.env.HOME + '/.local/bin', '/usr/local/bin', '/usr/bin', '/bin', '/opt/homebrew/bin'].join(':') }
+};
 if (!settings.permissions) settings.permissions = {};
 if (!settings.permissions.allow) settings.permissions.allow = [];
 if (!settings.permissions.allow.includes('mcp__brain-swarm')) {
